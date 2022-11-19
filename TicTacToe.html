@@ -24,19 +24,19 @@
 <body>
     <table border="1">
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td onclick="move(`img0`)"><img id="img0"></td>
+            <td onclick="move(`img1`)"><img id="img1"></td>
+            <td onclick="move(`img2`)"><img id="img2"></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td onclick="move(`img3`)"><img id="img3"></td>
+            <td onclick="move(`img4`)"><img id="img4"></td>
+            <td onclick="move(`img5`)"><img id="img5"></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td onclick="move(`img6`)"><img id="img6"></td>
+            <td onclick="move(`img7`)"><img id="img7"></td>
+            <td onclick="move(`img8`)"><img id="img8"></td>
         </tr>
     </table> <br>
     <input type="button" value="New Game">
@@ -45,6 +45,22 @@
     <input type="button" value="Save">
     <input type="button" value="Load">
     <input type="button" value="Mode">
+
+    <script>
+        let isCircle = false;
+        let gameOver = false;
+
+        function move(imgID) {
+            const imgObj = document.getElementById(imgID);
+            const player = isCircle ? "o" : "x";
+            if (window.getComputedStyle(imgObj).visibility == "hidden" && !gameOver) {
+                imgObj.src = `./${player}.png`;
+                imgObj.style.visibility = "visible";
+                isCircle = !isCircle;
+            }
+        }
+
+    </script>
 </body>
 
 </html>
