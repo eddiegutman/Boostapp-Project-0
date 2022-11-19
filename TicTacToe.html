@@ -24,19 +24,19 @@
 <body>
     <table border="1">
         <tr>
-            <td onclick="move(`img0`)"><img id="img0"></td>
-            <td onclick="move(`img1`)"><img id="img1"></td>
-            <td onclick="move(`img2`)"><img id="img2"></td>
+            <td onclick="move(`img0`)"><img id="img0" src="1"></td>
+            <td onclick="move(`img1`)"><img id="img1" src="2"></td>
+            <td onclick="move(`img2`)"><img id="img2" src="3"></td>
         </tr>
         <tr>
-            <td onclick="move(`img3`)"><img id="img3"></td>
-            <td onclick="move(`img4`)"><img id="img4"></td>
-            <td onclick="move(`img5`)"><img id="img5"></td>
+            <td onclick="move(`img3`)"><img id="img3" src="4"></td>
+            <td onclick="move(`img4`)"><img id="img4" src="5"></td>
+            <td onclick="move(`img5`)"><img id="img5" src="6"></td>
         </tr>
         <tr>
-            <td onclick="move(`img6`)"><img id="img6"></td>
-            <td onclick="move(`img7`)"><img id="img7"></td>
-            <td onclick="move(`img8`)"><img id="img8"></td>
+            <td onclick="move(`img6`)"><img id="img6" src="7"></td>
+            <td onclick="move(`img7`)"><img id="img7" src="8"></td>
+            <td onclick="move(`img8`)"><img id="img8" src="9"></td>
         </tr>
     </table> <br>
     <input type="button" value="New Game">
@@ -49,6 +49,16 @@
     <script>
         let isCircle = false;
         let gameOver = false;
+        let size = 3;
+        const imgObjArr = []
+
+        for (let i = 0; i < size; i++) {
+            const row = [];
+            for (let j = 0; j < size; j++) {
+                row.push(document.getElementById(`img${i * size + j}`));
+            }
+            imgObjArr.push(row);
+        }
 
         function move(imgID) {
             const imgObj = document.getElementById(imgID);
@@ -56,8 +66,72 @@
             if (window.getComputedStyle(imgObj).visibility == "hidden" && !gameOver) {
                 imgObj.src = `./${player}.png`;
                 imgObj.style.visibility = "visible";
+                if (checkWin()) {
+                    gameOver = true;
+                    window.setTimeout(function () { alert(`${player} is the winner!`)});
+                }
                 isCircle = !isCircle;
             }
+        }
+
+        function checkRow(n) {
+            let flag = true;
+            for (let i = 0; i < size - 1; i++) {
+                if (imgObjArr[n][i].src != imgObjArr[n][i + 1].src) {
+                    flag = false;
+                    break;
+                }
+            }
+            return flag;
+        }
+
+        function checkCol(n) {
+            let flag = true;
+            for (let i = 0; i < size - 1; i++) {
+                if (imgObjArr[i][n].src != imgObjArr[i + 1][n].src) {
+                    flag = false;
+                    break;
+                }
+            }
+            return flag;
+        }
+
+        function checkDiag1() {
+            let flag = true;
+            for (let i = 0; i < size - 1; i++) {
+                if (imgObjArr[i][i].src != imgObjArr[i + 1][i + 1].src) {
+                    flag = false;
+                    break;
+                }
+            }
+            return flag;
+        }
+
+        function checkDiag2() {
+            let flag = true;
+            for (let i = 0; i < size - 1; i++) {
+                if (imgObjArr[i][size - (i + 1)].src != imgObjArr[i + 1][size - (i + 2)].src) {
+                    flag = false;
+                    break;
+                }
+            }
+            return flag;
+        }
+
+        function checkWin() {
+            if (checkDiag1()) {
+                return true;
+            } else if(checkDiag2()) {
+                return true;
+            }
+            for (let i = 0; i < size; i++) {
+                if (checkRow(i)) {
+                    return true;
+                } else if (checkCol(i)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
     </script>
