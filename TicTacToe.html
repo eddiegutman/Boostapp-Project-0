@@ -39,7 +39,7 @@
             <td onclick="move(`img8`)"><img id="img8" src="8"></td>
         </tr>
     </table> <br>
-    <input type="button" value="New Game">
+    <input type="button" value="New Game" onclick="newGame()">
     <input type="button" value="Undo">
     <input type="button" value="Score">
     <input type="button" value="Save">
@@ -128,6 +128,15 @@
                 }
                 return false;
             }
+
+            reset() {
+                for (let i = 0; i < this.size; i++) {
+                    for (let j = 0; j < this.size; j++) {
+                        this.table[i][j].src = `${i * this.size + j}`;
+                        this.table[i][j].style.visibility = "hidden";
+                    }
+                }
+            }
         }
 
         class Game {
@@ -161,6 +170,12 @@
                     return false;
                 }
             }
+
+            newGame() {
+                this.board.reset();
+                this.isCircle = false;
+                this.gameOver = false;
+            }
         }
 
 
@@ -186,7 +201,9 @@
             // game.switchPlayer();
         }
 
-
+        function newGame() {
+            game.newGame();
+        }
 
     </script>
 </body>
