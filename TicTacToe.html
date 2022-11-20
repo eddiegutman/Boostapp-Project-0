@@ -43,7 +43,7 @@
     <input type="button" value="Undo" onclick="undo()">
     <input type="button" value="Score" onclick="highScore()">
     <input type="button" value="Save" onclick="save()">
-    <input type="button" value="Load">
+    <input type="button" value="Load" onclick="load()">
     <input type="button" value="Mode">
 
     <script>
@@ -150,17 +150,19 @@
                 return str;
             }
 
-            // loadBoardState(state) {
-            //     const arr = state.split(`,`);
-            //     for (let i = 0; i < this.size; i++) {
-            //         for (let j = 0; j < this.size; j++) {
-            //             this.table[i][j].src = arr[(i * this.size) + j];
-            //             if (this.table[i][j].src != `./x.png` && this.table[i][j].src != `./o.png`) {
-            //                 this.table[i][j].style.visibility = "hidden";
-            //             }
-            //         }
-            //     }
-            // }
+            loadBoardState(state) {
+                const arr = state.split(`,`);
+                for (let i = 0; i < this.size; i++) {
+                    for (let j = 0; j < this.size; j++) {
+                        if (arr[(i * this.size) + j] == "x.png" || arr[(i * this.size) + j] == "o.png") {
+                            this.table[i][j].style.visibility = "visible";
+                        } else {
+                            this.table[i][j].style.visibility = "hidden";
+                        }
+                        this.table[i][j].src = `./${arr[(i * this.size) + j]}`;
+                    }
+                }
+            }
         }
 
         class Game {
@@ -227,6 +229,16 @@
                 save += `${this.isCircle ? 1 : 0};${this.record};${this.numOfMoves}`;
                 window.localStorage.setItem("savedGame", save);
             }
+
+            loadGame() {
+                const saveFile = window.localStorage.getItem("savedGame");
+                const data = saveFile.split(";");
+                this.numOfMoves = data[4];
+                this.record = data[3];
+                this.isCircle = +data[2] ? true : false;
+                this.board.loadBoardState(data[1]);
+                this.history = data[0].split(",");
+            }
         }
 
 
@@ -281,10 +293,19 @@
                     game.saveGame();
                     alert("Game saved successfully")
                 } else {
-                    alert("There is already saved game");
+                    alert("There is already a saved game");
                 }
             } else {
-                alert("Cannot save completed game");
+                alert("Cannot save a completed game");
+            }
+        }
+
+        function load() {
+            if (localStorage.getItem("savedGame")) {
+                game.loadGame();
+                window.localStorage.clear();
+            } else {
+                alert("No saved game detected");
             }
         }
 
