@@ -40,7 +40,7 @@
         </tr>
     </table> <br>
     <input type="button" value="New Game" onclick="newGame()">
-    <input type="button" value="Undo">
+    <input type="button" value="Undo" onclick="undo()">
     <input type="button" value="Score">
     <input type="button" value="Save">
     <input type="button" value="Load">
@@ -129,7 +129,7 @@
                 return false;
             }
 
-            reset() {
+            resetBoard() {
                 for (let i = 0; i < this.size; i++) {
                     for (let j = 0; j < this.size; j++) {
                         this.table[i][j].src = `${i * this.size + j}`;
@@ -137,6 +137,29 @@
                     }
                 }
             }
+
+            // saveBoardState() {
+            //     let str = "";
+            //     for (let i = 0; i < this.size; i++) {
+            //         for (let j = 0; j < this.size; j++) {
+            //             str += `${this.table[i][j].src}`;
+            //             str += `,`;
+            //         }
+            //     }
+            //     return str;
+            // }
+
+            // loadBoardState(state) {
+            //     const arr = state.split(`,`);
+            //     for (let i = 0; i < this.size; i++) {
+            //         for (let j = 0; j < this.size; j++) {
+            //             this.table[i][j].src = arr[(i * this.size) + j];
+            //             if (this.table[i][j].src != `./x.png` && this.table[i][j].src != `./o.png`) {
+            //                 this.table[i][j].style.visibility = "hidden";
+            //             }
+            //         }
+            //     }
+            // }
         }
 
         class Game {
@@ -144,6 +167,7 @@
                 this.isCircle = false;
                 this.gameOver = false;
                 this.board = new Board(size);
+                this.history = [];
             }
 
             // move(imgNum) {
@@ -162,7 +186,7 @@
                 this.isCircle = !this.isCircle;
             }
 
-            checkGameOver() {
+            checkWin() {
                 if (this.board.checkWin()) {
                     this.gameOver = true;
                     return true;
@@ -172,9 +196,21 @@
             }
 
             newGame() {
-                this.board.reset();
+                this.board.resetBoard();
                 this.isCircle = false;
                 this.gameOver = false;
+            }
+
+            saveLastMove(imgID) {
+                this.history.push(`${imgID}`);
+            }
+
+            loadLastMove() {
+                const imgID = this.history.pop();
+                //this.board.loadBoardState(str);
+                const imgObj = document.getElementById(imgID);
+                imgObj.src = `${imgID.slice(3)}`;
+                imgObj.style.visibility = "hidden";
             }
         }
 
@@ -186,9 +222,10 @@
             const imgObj = document.getElementById(imgID);
             const player = game.currentPlayer();
             if (window.getComputedStyle(imgObj).visibility == "hidden" && !game.gameOver) {
+                game.saveLastMove(imgID);
                 imgObj.src = `./${player}.png`;
                 imgObj.style.visibility = "visible";
-                if (game.checkGameOver()) {
+                if (game.checkWin()) {
                     window.setTimeout(function () { alert(`${player} is the winner!`) });
                 }
                 game.switchPlayer();
@@ -203,6 +240,15 @@
 
         function newGame() {
             game.newGame();
+        }
+
+        function undo() {
+            if (game.history.length > 0 && !game.gameOver) {
+                game.loadLastMove();
+                game.switchPlayer();
+            } else {
+                alert("Cannot undo anymore");
+            }
         }
 
     </script>
