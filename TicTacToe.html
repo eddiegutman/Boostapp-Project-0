@@ -42,7 +42,7 @@
     <input type="button" value="New Game" onclick="newGame()">
     <input type="button" value="Undo" onclick="undo()">
     <input type="button" value="Score" onclick="highScore()">
-    <input type="button" value="Save">
+    <input type="button" value="Save" onclick="save()">
     <input type="button" value="Load">
     <input type="button" value="Mode">
 
@@ -138,16 +138,17 @@
                 }
             }
 
-            // saveBoardState() {
-            //     let str = "";
-            //     for (let i = 0; i < this.size; i++) {
-            //         for (let j = 0; j < this.size; j++) {
-            //             str += `${this.table[i][j].src}`;
-            //             str += `,`;
-            //         }
-            //     }
-            //     return str;
-            // }
+            saveBoardState() {
+                let str = "";
+                for (let i = 0; i < this.size; i++) {
+                    for (let j = 0; j < this.size; j++) {
+                        const location = this.table[i][j].src;
+                        str += `${location.substring(location.lastIndexOf("/") + 1)},`;
+                    }
+                }
+                str = str.slice(0, -1) + ";";
+                return str;
+            }
 
             // loadBoardState(state) {
             //     const arr = state.split(`,`);
@@ -215,6 +216,17 @@
                 imgObj.src = `${imgID.slice(3)}`;
                 imgObj.style.visibility = "hidden";
             }
+
+            saveGame() {
+                let save = "";
+                for (let i = 0; i < this.history.length; i++) {
+                    save += `${this.history[i]},`;
+                }
+                save = save.slice(0, -1) + ";";
+                save += this.board.saveBoardState();
+                save += `${this.isCircle ? 1 : 0};${this.record};${this.numOfMoves}`;
+                window.localStorage.setItem("savedGame", save);
+            }
         }
 
 
@@ -261,6 +273,19 @@
 
         function highScore() {
             alert(`Best game won with only ${game.record} moves`);
+        }
+
+        function save() {
+            if (!game.gameOver) {
+                if (!localStorage.getItem("savedGame")) {
+                    game.saveGame();
+                    alert("Game saved successfully")
+                } else {
+                    alert("There is already saved game");
+                }
+            } else {
+                alert("Cannot save completed game");
+            }
         }
 
     </script>
