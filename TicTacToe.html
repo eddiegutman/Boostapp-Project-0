@@ -41,7 +41,7 @@
     </table> <br>
     <input type="button" value="New Game" onclick="newGame()">
     <input type="button" value="Undo" onclick="undo()">
-    <input type="button" value="Score">
+    <input type="button" value="Score" onclick="highScore()">
     <input type="button" value="Save">
     <input type="button" value="Load">
     <input type="button" value="Mode">
@@ -168,6 +168,8 @@
                 this.gameOver = false;
                 this.board = new Board(size);
                 this.history = [];
+                this.record = size * size;
+                this.numOfMoves = 0;
             }
 
             // move(imgNum) {
@@ -199,6 +201,7 @@
                 this.board.resetBoard();
                 this.isCircle = false;
                 this.gameOver = false;
+                this.numOfMoves = 0;
             }
 
             saveLastMove(imgID) {
@@ -225,7 +228,11 @@
                 game.saveLastMove(imgID);
                 imgObj.src = `./${player}.png`;
                 imgObj.style.visibility = "visible";
+                game.numOfMoves++;
                 if (game.checkWin()) {
+                    if (game.numOfMoves < game.record) {
+                        game.record = game.numOfMoves;
+                    }
                     window.setTimeout(function () { alert(`${player} is the winner!`) });
                 }
                 game.switchPlayer();
@@ -246,9 +253,14 @@
             if (game.history.length > 0 && !game.gameOver) {
                 game.loadLastMove();
                 game.switchPlayer();
+                game.numOfMoves--;
             } else {
                 alert("Cannot undo anymore");
             }
+        }
+
+        function highScore() {
+            alert(`Best game won with only ${game.record} moves`);
         }
 
     </script>
