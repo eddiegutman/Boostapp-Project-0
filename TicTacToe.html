@@ -63,12 +63,6 @@
                 this.table = table;
             }
 
-            // getImgObj(imgNum) {
-            //     const i = parseInt(imgNum / this.size);
-            //     const j = imgNum % this.size;
-            //     return this.table[i][j];
-            // }
-
             checkRow(n) {
                 let flag = true;
                 for (let i = 0; i < this.size - 1; i++) {
@@ -176,14 +170,6 @@
                 this.numOfMoves = 0;
             }
 
-            // move(imgNum) {
-            //     const imgObj = this.board.getImgObj(imgNum);
-            //     if (window.getComputedStyle(imgObj).visibility == "hidden" && !this.gameOver) {
-            //         imgObj.src = `./${this.currentPlayer()}.png`;
-            //         imgObj.style.visibility = "visible";
-            //     }
-            // }
-
             currentPlayer() {
                 return this.isCircle ? "o" : "x";
             }
@@ -223,7 +209,6 @@
 
             loadLastMove() {
                 const imgID = this.history.pop();
-                //this.board.loadBoardState(str);
                 const imgObj = document.getElementById(imgID);
                 imgObj.src = `${imgID.slice(3)}`;
                 imgObj.style.visibility = "hidden";
@@ -251,9 +236,7 @@
             }
         }
 
-
         let game = new Game(3);
-
 
         function move(imgID) {
             const imgObj = document.getElementById(imgID);
@@ -273,12 +256,6 @@
                 }
                 game.switchPlayer();
             }
-
-            // game.move(imgNum)
-            // if (game.checkGameOver()) {
-            //     window.setTimeout(function () { alert(`${player} is the winner!`) }, 5);
-            // }
-            // game.switchPlayer();
         }
 
         function newGame() {
@@ -337,17 +314,17 @@
                 for (let j = 0; j < mode; j++) {
                     const img = document.createElement("img");
                     img.id = `img${counter}`;
-                    img.src = `./${counter}`;
+                    img.src = `${counter}`;
 
                     const td = document.createElement("td");
                     td.addEventListener("click", function anon() { move(img.id); });
 
-                    td.appendChild(img);
-                    tr.appendChild(td);
+                    td.append(img);
+                    tr.append(td);
 
                     counter++;
                 }
-                table.appendChild(tr);
+                table.append(tr);
             }
             game = new Game(mode);
         }
