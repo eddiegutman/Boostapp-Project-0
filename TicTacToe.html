@@ -22,18 +22,18 @@
 </head>
 
 <body>
-    <table border="1">
-        <tr>
+    <table id="table" border="1">
+        <tr id="tr0">
             <td onclick="move(`img0`)"><img id="img0" src="0"></td>
             <td onclick="move(`img1`)"><img id="img1" src="1"></td>
             <td onclick="move(`img2`)"><img id="img2" src="2"></td>
         </tr>
-        <tr>
+        <tr id="tr1">
             <td onclick="move(`img3`)"><img id="img3" src="3"></td>
             <td onclick="move(`img4`)"><img id="img4" src="4"></td>
             <td onclick="move(`img5`)"><img id="img5" src="5"></td>
         </tr>
-        <tr>
+        <tr id="tr2">
             <td onclick="move(`img6`)"><img id="img6" src="6"></td>
             <td onclick="move(`img7`)"><img id="img7" src="7"></td>
             <td onclick="move(`img8`)"><img id="img8" src="8"></td>
@@ -44,7 +44,7 @@
     <input type="button" value="Score" onclick="highScore()">
     <input type="button" value="Save" onclick="save()">
     <input type="button" value="Load" onclick="load()">
-    <input type="button" value="Mode">
+    <input type="button" value="Mode" onclick="mode()">
 
     <script>
 
@@ -171,7 +171,8 @@
                 this.gameOver = false;
                 this.board = new Board(size);
                 this.history = [];
-                this.record = size * size;
+                this.maxMoves = size * size;
+                this.record = this.maxMoves;
                 this.numOfMoves = 0;
             }
 
@@ -193,6 +194,15 @@
 
             checkWin() {
                 if (this.board.checkWin()) {
+                    this.gameOver = true;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            checkTie() {
+                if (!this.gameOver && this.numOfMoves == this.maxMoves) {
                     this.gameOver = true;
                     return true;
                 } else {
@@ -242,7 +252,7 @@
         }
 
 
-        const game = new Game(3);
+        let game = new Game(3);
 
 
         function move(imgID) {
@@ -258,6 +268,8 @@
                         game.record = game.numOfMoves;
                     }
                     window.setTimeout(function () { alert(`${player} is the winner!`) });
+                } else if (game.checkTie()) {
+                    window.setTimeout(function () { alert(`Tie!`) });
                 }
                 game.switchPlayer();
             }
@@ -307,6 +319,37 @@
             } else {
                 alert("No saved game detected");
             }
+        }
+
+        function mode() {
+            const mode = +prompt("Enter board dimension");
+            const table = document.getElementById("table");
+            let counter = 0;
+
+            for (let i = 0; i < game.board.size; i++) {
+                document.getElementById(`tr${i}`).remove();
+            }
+            
+            for (let i = 0; i < mode; i++) {
+                const tr = document.createElement("tr");
+                tr.id = `tr${i}`;
+
+                for (let j = 0; j < mode; j++) {
+                    const img = document.createElement("img");
+                    img.id = `img${counter}`;
+                    img.src = `./${counter}`;
+
+                    const td = document.createElement("td");
+                    td.addEventListener("click", function anon() { move(img.id); });
+
+                    td.appendChild(img);
+                    tr.appendChild(td);
+
+                    counter++;
+                }
+                table.appendChild(tr);
+            }
+            game = new Game(mode);
         }
 
     </script>
